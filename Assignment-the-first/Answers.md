@@ -56,11 +56,11 @@
             * hopped_R2.fq
 
     At the end, get a summary of:
-
-    * the number of read-pairs with properly matched indexes (per index-pair),
+        
     * the number of read pairs with index-hopping observed,
     * the number of read-pairs with unknown index(es),
-    * the numbers for each possible pair of indexes (both swapped and dual matched).
+    * the numbers for each possible pair of indexes (both swapped and dual matched),
+    * the number of read-pairs with properly matched indexes (per index-pair).
 
 3. Upload your [4 input FASTQ files](../TEST-input_FASTQ) and your [>=6 expected output FASTQ files](../TEST-output_FASTQ).
 Done!
@@ -120,12 +120,13 @@ with gzip.open(readpair1, 'r') as rp1, open('readpair2', 'r') as rp2, open('inde
                 index1_seq = line2[2].strip()
                 index2_seq = line2[3].strip()
                 rev_com_index2_seq = reverse_complement(index2_seq)
+                
                 index_pair = f"{index1_seq}-{rev_com_index2_seq}"
             append index_pair to the end of readpair1 and readpair 2's headers in line1: line1[0] and line1[1]
                 line1[0] = line1[0].strip() + f" {index_pair}\n" 
                 line1[1] = line1[1].strip() + f" {index_pair}\n"
 
-            - (1) [if statement] do we sort into the unknown/low quality category (aka is this INVALID)?
+            - (1) [if statement] do we sort into the unknown/low quality category cuz it doesn't match the 24 known barcodes, or contains an N (aka is this INVALID)?
             look at index1 and index2's sequence line: line2[2] and line2[3]
             if index1 seq line or index2 seq line NOT found in the 24 known matches OR contains "N":
                 write this record (all four lines) from readpair1 to unknown_r1
@@ -140,21 +141,21 @@ with gzip.open(readpair1, 'r') as rp1, open('readpair2', 'r') as rp2, open('inde
                 write this record (all four lines) from readpair2 to unknown_r2
                 unknown_counter += 1
             
-            ------[else statement] after dumping the INVALID reads into 2 files, now I'm looking at VALID reads, meaning index1 and index2 seq lines found in the 24 known indexes!------
+            ------[else statement] after dumping the INVALID reads into 2 files, now I'm looking at VALID reads, meaning index1 and (reverse complement) index2 seq lines found in the 24 known indexes!------
 
             - (*) add to the possible_combinations dict if the read is VALID:
                 key = index_pair
-                value = 1, and increment by 1 each time we across it again
+                value = 1, and increment by 1 each time I see it again
             
             - (1) [if statement] do we sort into the dual-matched category (VALID)?
             look at index1 and index2's sequence line: line2[2] and line2[3]
-            if index1 seq line == rev_com_index2_seq (AND index1 and index2 seq lines found in the 24 known indexes):
+            if index1 seq line == rev_com_index2_seq:
                 write this record (all four lines) from readpair1 to a read1 FASTQ file, for each index-pair
                 write this record (all four lines) from readpair2 to a read2 FASTQ file, for each index-pair
                 (48 of these total for each index-pair)
                 add to the dual_matched_only dict:
                     key = index_pair
-                    value = 1, and increment by 1 each time we across it again
+                    value = 1, and increment by 1 each time I see it again
 
             - (2) [if statement] or do we sort the unmatched/index hopping category (also VALID)?
             look at index1 and index2's sequence line: line2[2] and line2[3]
@@ -167,13 +168,13 @@ with gzip.open(readpair1, 'r') as rp1, open('readpair2', 'r') as rp2, open('inde
 ```
 
 At the end, get a summary of:
-* the number of read-pairs with properly matched indexes (per index-pair),
 * the number of read pairs with index-hopping observed,
 * the number of read-pairs with unknown index(es),
-* the numbers for each possible pair of indexes (both swapped and dual matched).
+* the numbers for each possible pair of indexes (both swapped and dual matched),
+* the number of read-pairs with properly matched indexes (per index-pair).
 
 Questions/more to come:
-- How do i initialize and use a dictionary to help me write 52 files? or should i use append? any advice?
+- How do I initialize and use a dictionary to help me write 52 files? Or should I use append? Any advice?
 - For later: need to clarify code for writing into initialized file names
 
 - For later: running this script efficiently: i'll write this as a python script. to run a python script in the terminal, it's `./pythonscript.py [argparse variables]` (bash language :))
