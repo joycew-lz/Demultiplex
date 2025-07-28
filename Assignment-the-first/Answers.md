@@ -180,7 +180,7 @@ Questions/more to come:
 - For later: running this script efficiently: i'll write this as a python script. to run a python script in the terminal, it's `./pythonscript.py [argparse variables]` (bash language :))
     - since i don't want to run this in a login node, i'm going to make a bash script
         - in the bash script, i'll write my sbatch stuff, mamba activate an environment, then run the python script by adding ` /usr/bin/time -v ` `./pythonscript.py [argparse variables]`
-    - `chmod bashscript.sh`
+    - `chmod bashscript.sh` and `chmod pythonscript.py`
     - `sbatch bashscript.sh`
 
 After peer review, i need to:
