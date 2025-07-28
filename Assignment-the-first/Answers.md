@@ -11,9 +11,10 @@
 | 1294_S1_L008_R4_001.fastq.gz | read2 | 101 bp | phred+33 |
 
 2. Per-base NT distribution
-    1. Use markdown to insert your 4 histograms here.
-    2. **YOUR ANSWER HERE**
-    3. **YOUR ANSWER HERE**
+    1. [R1 mean q_scores per-base](./R1_mean_qscores.png)
+    2. [R2 mean q_scores per-base](./R2_mean_qscores.png)
+    3. [R3 mean q_scores per-base](./R3_mean_qscores.png)
+    4. [R4 mean q_scores per-base](./R4_mean_qscores.png)
     
 ## Part 2
 1. Define the problem:
