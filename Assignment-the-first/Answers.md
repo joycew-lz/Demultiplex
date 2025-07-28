@@ -101,7 +101,7 @@ Done!
 ```
 remember to strip :)
 
-with gzip.open(readpair1, 'r') as rp1, open('readpair2', 'r') as rp2, open('index1', 'r') as i1, open ('index2', 'r') as i2:
+with gzip.open(readpair1, 'rt') as rp1, open('readpair2', 'rt') as rp2, open('index1', 'rt') as i1, open ('index2', 'rt') as i2:
     
     initialize line1, line2, line3, line4 to be empty lists 
     
