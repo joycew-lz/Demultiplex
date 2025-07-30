@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 def get_args():
-    parser = argparse.ArgumentParser(description="__s")
+    parser = argparse.ArgumentParser(description="to get file name and length of the list for a script that plots mean q_scores")
     parser.add_argument("-f", help="to specify the file name", type=str, required=True)
     parser.add_argument("-l", help="to specify the length of the list to be created", type=int, required=True)
     return parser.parse_args()
