@@ -15,6 +15,20 @@
     2. [R2 mean q_scores per-base](./R2_mean_qscores.png)
     3. [R3 mean q_scores per-base](./R3_mean_qscores.png)
     4. [R4 mean q_scores per-base](./R4_mean_qscores.png)
+
+3. Do we *need* a quality score cut-off?
+
+Once we start mapping to the reference genome after demultiplexing, our aligner should deal with the poor-quality sequence reads. Thus, there's no need for a quality score cut-off for sequence reads (R1 and R4). 
+
+So, let's consider a quality score cut-off for the index reads.
+
+We are given the requirement that, for a record to be considered a valid read, there must be no "N's" in its barcode sequences. Having no N's in an index means that the sequencer was able to determine which base was present for the entire barcode sequence. By having this conditional, we are already using one form of a quality score cutoff.
+
+Hamming's distance measures the number of differing bases (called wrong) between two sequences of equal length, at the same exact positions. If the Hamming's distance is 2 for an index1 (R2) that matches one of the 24 known indexes (aka the index is valid), then let's consider the chance that those 2 incorrectly called bases would cause R2 to match *another* known barcode. Ideally, this wouldn't be likely.
+
+Looking at our 24 unique barcodes, all of length 8, we would need to have at least 4 bases called wrong at the same positions for a valid index sequence to be recognized as *another* valid index sequence. 50% of the bases being called incorrectly in a way that matches another known barcode is very unlikely. Thus, the higher the Hamming's distance is, the greater the chance that a low quality score will not impact my valid bases, because these multiple base-calling errors are very unlikely to transform one barcode into another and the probability of misassignment is reduced.
+
+*calculate Hamming's distance:*
     
 ## Part 2
 1. Define the problem:
@@ -70,13 +84,13 @@ Done!
 
     import argparse
     
-    import bioinfo (and be sure to update bioinfo.py (and git add/commit/push) before making a copy to my Demultiplexing folder)
+    import bioinfo
     
     import gzip
 
     argparse:
-    - readpair1 = args.rp1 (FILE: R1)
-    - readpair2 = args.rp2 (FILE: R4)
+    - bioread1 = args.rp1 (FILE: R1)
+    - bioread2 = args.rp2 (FILE: R4)
     - index1 = args.i1 (FILE: R2)
     - index2 = args.i2 (FILE: R3)
     - qc_cutoff = args.q (DETERMINED IN PART 1)
@@ -84,10 +98,10 @@ Done!
     Initialize file names for writing into.
 
     ```
-    unknown_r1 = "unknown_R1.fq"
-    unknown_r2 = "unknown_R2.fq"
-    hopped_r1 = "hopped_R1.fq"
-    hopped_r2 "hopped_R2.fq"
+    unknown_R1 = "unknown_R1.fq"
+    unknown_R2 = "unknown_R2.fq"
+    hopped_R1 = "hopped_R1.fq"
+    hopped_R2 = "hopped_R2.fq"
     ```
 
     Answering summary questions: Initialize counters. Initialize a dictionary for counting each possible pair of indexes (both swapped and dual matched). Initialize a dictionary for counting each pair of properly matched indexes.
@@ -102,12 +116,12 @@ Done!
 ```
 remember to strip :)
 
-with gzip.open(readpair1, 'rt') as rp1, open('readpair2', 'rt') as rp2, open('index1', 'rt') as i1, open ('index2', 'rt') as i2:
+with gzip.open(bioread1, 'rt') as rp1, open(bioread2, 'rt') as rp2, open(index1, 'rt') as i1, open (index2, 'rt') as i2:
     
     initialize line1, line2, line3, line4 to be empty lists 
     
     parse through each record, looking at all four files at the same time; get the four lines of a record stored on these lists:
-        [0th index is from readpair1, 1st is from readpair2, 2nd is from index1, 3rd is from index2]
+        [0th index is from biopair1, 1st is from bioread2, 2nd is from index1, 3rd is from index2]
         line1 list = header
         line2 list = sequence
         line3 list = +
@@ -123,23 +137,23 @@ with gzip.open(readpair1, 'rt') as rp1, open('readpair2', 'rt') as rp2, open('in
                 rev_com_index2_seq = reverse_complement(index2_seq)
                 
                 index_pair = f"{index1_seq}-{rev_com_index2_seq}"
-            append index_pair to the end of readpair1 and readpair 2's headers in line1: line1[0] and line1[1]
+            append index_pair to the end of bioread1 and bioread2's headers in line1: line1[0] and line1[1]
                 line1[0] = line1[0].strip() + f" {index_pair}\n" 
                 line1[1] = line1[1].strip() + f" {index_pair}\n"
 
             - (1) [if statement] do we sort into the unknown/low quality category cuz it doesn't match the 24 known barcodes, or contains an N (aka is this INVALID)?
             look at index1 and index2's sequence line: line2[2] and line2[3]
             if index1 seq line or index2 seq line NOT found in the 24 known matches OR contains "N":
-                write this record (all four lines) from readpair1 to unknown_r1
-                write this record (all four lines) from readpair2 to unknown_r2
+                write this record (all four lines) from bioread1 to unknown_R1
+                write this record (all four lines) from bioread2 to unknown_R2
                 unknown_counter += 1
 
             - (2) [if statement] or do we sort into the unknown/low quality category given the threshold qc_cutoff (still INVALID)?
             look at index1 and index2's quality score line: line4[2] and line4[3]
             convert quality score lines to mean phred scores using bioinfo.convert_mean_phred()
             if index1 OR index2's mean phred score is below the qc_cutoff:
-                write this record (all four lines) from readpair1 to unknown_r1
-                write this record (all four lines) from readpair2 to unknown_r2
+                write this record (all four lines) from bioread1 to unknown_R1
+                write this record (all four lines) from bioread2 to unknown_R2
                 unknown_counter += 1
             
             ------[else statement] after dumping the INVALID reads into 2 files, now I'm looking at VALID reads, meaning index1 and (reverse complement) index2 seq lines found in the 24 known indexes!------
@@ -151,8 +165,8 @@ with gzip.open(readpair1, 'rt') as rp1, open('readpair2', 'rt') as rp2, open('in
             - (1) [if statement] do we sort into the dual-matched category (VALID)?
             look at index1 and index2's sequence line: line2[2] and line2[3]
             if index1 seq line == rev_com_index2_seq:
-                write this record (all four lines) from readpair1 to a read1 FASTQ file, for each index-pair
-                write this record (all four lines) from readpair2 to a read2 FASTQ file, for each index-pair
+                write this record (all four lines) from bioread1 to a read1 FASTQ file, for each index-pair
+                write this record (all four lines) from bioread2 to a read2 FASTQ file, for each index-pair
                 (48 of these total for each index-pair)
                 add to the dual_matched_only dict:
                     key = index_pair
@@ -161,8 +175,8 @@ with gzip.open(readpair1, 'rt') as rp1, open('readpair2', 'rt') as rp2, open('in
             - (2) [if statement] or do we sort the unmatched/index hopping category (also VALID)?
             look at index1 and index2's sequence line: line2[2] and line2[3]
             if index1 seq line != rev_com_index2_seq:
-                write this record (all four lines) from readpair1 to hopped_r1
-                write this record (all four lines) from readpair2 to hopped_r2
+                write this record (all four lines) from bioread1 to hopped_R1
+                write this record (all four lines) from bioread2 to hopped_R2
                 hopped_counter += 1
         
         empty the line lists after looping through one record
@@ -186,7 +200,6 @@ Questions/more to come:
 
 After peer review, i need to:
 - Answer those questions
-- Add functions and unit tests to bioinfo.py
 
 ------
 
@@ -196,7 +209,7 @@ After peer review, i need to:
     3. Test examples for individual functions
     4. Return statement
 
-    I want to create two functions in the bioinfo.py script (and make unit tests for both in the script to make sure it's working).
+    I want to create two functions.
     
         def reverse_complement(str):
             '''
