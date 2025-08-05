@@ -1,7 +1,7 @@
 # Assignment the First
 
 ## Part 1
-1. Be sure to upload your Python script. Provide a link to it here:
+1. Be sure to upload your Python script. Provide a link to it here: https://github.com/joycew-lz/Demultiplex/blob/2d165f9b16b36c4cf4520fa77c55d77481557b65/Assignment-the-first/part1_script.py 
 
 | File name | label | Read length | Phred encoding |
 |---|---|---|---|
@@ -29,6 +29,23 @@ Hamming's distance measures the number of differing bases (called wrong) between
 Looking at our 24 unique barcodes, all of length 8, we would need to have at least 4 bases called wrong at the same positions for a valid index sequence to be recognized as *another* valid index sequence. 50% of the bases being called incorrectly in a way that matches another known barcode is very unlikely. Thus, the higher the Hamming's distance is, the greater the chance that a low quality score will not impact my valid bases, because these multiple base-calling errors are very unlikely to transform one barcode into another and the probability of misassignment is reduced.
 
 *calculate Hamming's distance:*
+
+4. How many indexes have undetermined (N) base calls? (Utilize your command line tool knowledge. Submit the command(s) you used. CHALLENGE: use a one-line command)
+
+```
+zcat 1294_S1_L008_R2_001.fastq.gz | sed -n "2~2p"| grep -c "N"
+```
+
+3976613
+
+```
+zcat 1294_S1_L008_R3_001.fastq.gz | sed -n "2~2p"| grep -c "N"
+```
+
+3328051
+
+Total: 7304664
+
     
 ## Part 2
 1. Define the problem:
@@ -217,8 +234,8 @@ After peer review, i need to:
             Example: 'GTAGCGTA' → 'TACGCTAC'
             '''
             return rev_com
-        Input: AGCT
-        Expected output: AGCT
+        Input: GTAGCGTA
+        Expected output: TACGCTAC
         
 
         def convert_mean_phred(str):
