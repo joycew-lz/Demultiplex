@@ -93,7 +93,7 @@ y = my_list
 plt.figure(figsize=(12, 6))
 plt.plot(x, y)
 plt.grid()
-plt.title("Mean Phred Quality Score per Base Position")
+plt.title(f"Mean Phred Quality Score per Base Position for {file_name}")
 plt.xlabel("Base Position")
 plt.ylabel("Mean Phred Quality Score")
 
