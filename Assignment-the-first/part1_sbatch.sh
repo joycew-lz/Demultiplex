@@ -12,7 +12,7 @@
 
 # change sbatch notes to change job and output/error names as I go through each FASTQ file
 
-# /usr/bin/time -v ./part1_script.py -f /projects/bgmp/shared/2017_sequencing/1294_S1_L008_R1_001.fastq.gz -l 101
+/usr/bin/time -v ./part1_script.py -f /projects/bgmp/shared/2017_sequencing/1294_S1_L008_R1_001.fastq.gz -l 101
 
 # /usr/bin/time -v ./part1_script.py -f /projects/bgmp/shared/2017_sequencing/1294_S1_L008_R4_001.fastq.gz -l 101
 
