@@ -234,8 +234,8 @@ After peer review, i need to:
             Example: 'GTAGCGTA' → 'TACGCTAC'
             '''
             return rev_com
-        Input: GTAGCGTA
-        Expected output: TACGCTAC
+        Input: GTAGCGTACGA
+        Expected output: TCGTACGCTAC
         
 
         def convert_mean_phred(str):
