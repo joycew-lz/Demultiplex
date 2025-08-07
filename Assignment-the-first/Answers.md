@@ -20,15 +20,14 @@
 
 Once we start mapping to the reference genome after demultiplexing, our aligner should deal with the poor-quality sequence reads. Thus, there's no need for a quality score cut-off for sequence reads (R1 and R4). 
 
-So, let's consider a quality score cut-off for the index reads.
+So, let's consider a quality score cut-off for the index reads (R2 and R3).
 
 We are given the requirement that, for a record to be considered a valid read, there must be no "N's" in its barcode sequences. Having no N's in an index means that the sequencer was able to determine which base was present for the entire barcode sequence. By having this conditional, we are already using one form of a quality score cutoff.
 
 Hamming's distance measures the number of differing bases (called wrong) between two sequences of equal length, at the same exact positions. If the Hamming's distance is 2 for an index1 (R2) that matches one of the 24 known indexes (aka the index is valid), then let's consider the chance that those 2 incorrectly called bases would cause R2 to match *another* known barcode. Ideally, this wouldn't be likely.
 
-Looking at our 24 unique barcodes, all of length 8, we would need to have at least 4 bases called wrong at the same positions for a valid index sequence to be recognized as *another* valid index sequence. 50% of the bases being called incorrectly in a way that matches another known barcode is very unlikely. Thus, the higher the Hamming's distance is, the greater the chance that a low quality score will not impact my valid bases, because these multiple base-calling errors are very unlikely to transform one barcode into another and the probability of misassignment is reduced.
+Looking at our 24 unique barcodes, all of length 8, we would need to have at least 3-4 bases called wrong at the same positions for a valid index sequence to be recognized as *another* valid index sequence. Having around 50% of the bases being called incorrectly in a way that matches another known barcode is very unlikely. These 24 barcodes were designed to have high Hamming's distances. Thus, the higher the Hamming's distance is, the greater the chance that a low quality score will not impact the valid bases-- because these multiple base-calling errors are very unlikely to transform one barcode into another, and the probability of misassignment is very low.
 
-*calculate Hamming's distance:*
 
 4. How many indexes have undetermined (N) base calls? (Utilize your command line tool knowledge. Submit the command(s) you used. CHALLENGE: use a one-line command)
 
