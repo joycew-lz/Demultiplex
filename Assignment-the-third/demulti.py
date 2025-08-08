@@ -230,7 +230,7 @@ with open("demulti_summary.md", "w") as out:
 
 #--------------
 # answering summary questions: visualizations
-    # Bar chart for visualizing the number of dual-matched index pairs:
+    # Bar chart for visualizing the number of dual-matched index pairs
 #--------------
 
 plt.figure(figsize=(12, 6))
@@ -242,14 +242,14 @@ plt.xticks(rotation=45, fontsize=6)
 plt.savefig("matched_barchart.svg")
 
 #--------------
-
+# create a matrix (unfinished idea)
 #--------------
 
 # Matrix: want unique values only in row and column of matrix displaying contents of possible_combinations
       # for all possible pairs of indexes:
         # use a matrix? row = index_pair_1 and column = index_pair_2. content is the frequency of each
         # possible pair of indexes.
-        # Percentage of reads from each sample: add that onto demulti_summary.txt? add that in the matrix?
+        
 # index_pair_1_set = set()
 # index_pair_2_set = set()
 # for k in possible_combinations.keys():
@@ -257,20 +257,4 @@ plt.savefig("matched_barchart.svg")
 #     index_pair_1_set.add(index_pair_1)
 #     index_pair_2_set.add(index_pair_2)
 
-# # Matrix: sort the sets so the matrix is consistent in order
-# index1_list = sorted(index_pair_1_set)
-# index2_list = sorted(index_pair_2_set)
-
-# # Matrix: initialize matrix (list of lists)
-# # Rows = index1s, Columns = index2s
-# matrix = []
-# for i1 in index1_list:
-#     row = []
-#     for i2 in index2_list:
-#         key = f"{i1}-{i2}"
-#         count = possible_combinations.get(key, 0)  # Get count, or 0 if not present
-#         row.append(count)
-#     matrix.append(row)
-
-# know we have unique values only now. so
 
