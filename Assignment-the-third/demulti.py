@@ -233,12 +233,13 @@ with open("demulti_summary.md", "w") as out:
     # Bar chart for visualizing the number of dual-matched index pairs
 #--------------
 
-plt.figure(figsize=(12, 6))
+plt.figure(figsize=(12, 9))
 plt.bar(list(dual_matched_only.keys()), list(dual_matched_only.values()), color="steelblue")
 plt.xlabel("Index Pair")
 plt.ylabel("Number of Reads")
 plt.title("Number of Dual-Matched Index Pairs")
-plt.xticks(rotation=45, fontsize=6)
+plt.xticks(rotation=45, fontsize=5)
+plt.tight_layout()
 plt.savefig("matched_barchart.svg")
 
 #--------------
