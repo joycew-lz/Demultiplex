@@ -42,7 +42,7 @@ init_list(my_list)
 # populate list
 #--------------
         
-def populate_list(file: str) -> tuple[list, int]:
+def populate_list(file: str):
     """Opens a FASTQ file and loops through every record to
     convert the quality score of each line to a numerical Phred quality score with the convert_phred() function.
     Stores each Phred quality score for each base pair to an ongoing sum.
